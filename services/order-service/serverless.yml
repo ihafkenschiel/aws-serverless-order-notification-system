@@ -1,0 +1,28 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: tigerbytestudio
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: order-notification-system
+service: order-service
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+  environment:
+    ORDER_QUEUE_URL: !Ref OrderQueue
+
+functions:
+  createOrder:
+    handler: src/createOrder.handler
+    events:
+      - http:
+          path: order
+          method: post
+
+resources:
+  Resources:
+    OrderQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: orderQueue
